@@ -12,6 +12,7 @@
 import { Router } from 'express';
 
 import * as roomController from '../../controllers/room.controller.js';
+import * as bookingController from '../../controllers/booking.controller.js';
 import { authenticate } from '../../middleware/authenticate.js';
 import { authorize, requirePermission } from '../../middleware/authorize.js';
 import { validate } from '../../middleware/validate.js';
@@ -27,6 +28,10 @@ import {
   facilitiesSchema,
   operatingHoursSchema,
 } from '../../validations/room.validation.js';
+import {
+  availabilityQuerySchema,
+  availableRoomsQuerySchema,
+} from '../../validations/booking.validation.js';
 
 const router = Router();
 
@@ -40,7 +45,10 @@ const canRead = requirePermission('room:read');
 router.get('/', canRead, validate(listRoomsQuerySchema, 'query'), roomController.listRooms);
 router.get('/categories', canRead, roomController.getCategories);
 router.get('/facilities', canRead, roomController.getFacilities);
+// Availability (Phase 3, booking-derived) — frozen §10.3 paths. Before /:id.
+router.get('/available', canRead, validate(availableRoomsQuerySchema, 'query'), bookingController.availableRooms);
 router.get('/:id', canRead, validate(idParamSchema, 'params'), roomController.getRoom);
+router.get('/:id/availability', canRead, validate(idParamSchema, 'params'), validate(availabilityQuerySchema, 'query'), bookingController.roomAvailability);
 
 // ---------------------------------------------------------------------------
 // Writes — admin only

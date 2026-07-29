@@ -11,6 +11,7 @@ import healthRoutes from './health.routes.js';
 import authRoutes from './auth.routes.js';
 import userRoutes from './user.routes.js';
 import roomRoutes from './room.routes.js';
+import bookingRoutes from './booking.routes.js';
 
 const router = Router();
 
@@ -18,6 +19,7 @@ router.use('/', healthRoutes);
 router.use('/auth', authRoutes); // Phase 1B
 router.use('/users', userRoutes); // Phase 1C
 router.use('/rooms', roomRoutes); // Phase 2
+router.use('/bookings', bookingRoutes); // Phase 3
 
 // --- Module routers (added in later phases) ---
 // router.use('/users', userRoutes);         // Phase 6
