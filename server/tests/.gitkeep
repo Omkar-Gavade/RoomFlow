@@ -1,0 +1,2 @@
+# Tests — added Phase 8 (unit: conflictDetector, stateMachine, permissions;
+# integration: auth, room, booking). app.js exports without listen() for Supertest.

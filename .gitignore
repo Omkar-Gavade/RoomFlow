@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment secrets — NEVER commit (ARCHITECTURE.md §23, ADR-13)
+.env
+.env.local
+.env.*.local
+**/.env
+
+# Local tooling / installed skill bundles
+.claude/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Build / coverage
+dist/
+coverage/
+.nyc_output/
+
+# Uploads (files go to Cloudinary — Render FS is ephemeral)
+uploads/
+tmp/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
