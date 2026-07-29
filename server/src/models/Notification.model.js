@@ -17,6 +17,7 @@ import {
   NOTIFICATION_PRIORITY,
   NOTIFICATION_PRIORITY_VALUES,
 } from '../constants/notificationTypes.js';
+
 import { toJSONPlugin } from './plugins/toJSON.plugin.js';
 
 const { Schema, model } = mongoose;

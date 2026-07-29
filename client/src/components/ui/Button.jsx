@@ -39,6 +39,9 @@ export const Button = forwardRef(function Button(
     size = 'md',
     loading = false,
     magnetic = false,
+    // Default to "button": an unset type resolves to submit, which made every
+    // icon/ghost button inside a form (theme toggle, password reveal) submit it.
+    type = 'button',
     disabled,
     className,
     children,
@@ -93,6 +96,7 @@ export const Button = forwardRef(function Button(
       onMouseMove={handleMove}
       onMouseLeave={() => setOffset({ x: 0, y: 0 })}
       onClick={handleClick}
+      type={type}
       disabled={disabled || loading}
       animate={{ x: offset.x, y: offset.y }}
       transition={SPRING}

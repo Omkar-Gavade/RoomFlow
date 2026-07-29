@@ -1,2 +1,0 @@
-# Seed scripts — added Phase 1+ (seedAdmin, seedRooms). Refuse to run when
-# NODE_ENV=production (risk R12). See ARCHITECTURE.md §6, §30.

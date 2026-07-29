@@ -6,9 +6,6 @@
  * (never block the flow). Generic error messages avoid user enumeration (§23 #4).
  */
 import { User } from '../models/User.model.js';
-import * as tokenService from './token.service.js';
-import * as auditService from './audit.service.js';
-import { sendEmail } from './email.service.js';
 import { hashToken } from '../utils/crypto.js';
 import { ApiError } from '../utils/ApiError.js';
 import { env } from '../config/env.js';
@@ -16,6 +13,10 @@ import { logger } from '../config/logger.js';
 import { AUDIT_ACTIONS, AUDIT_ENTITY_TYPES } from '../constants/auditActions.js';
 import { ROLES } from '../constants/roles.js';
 import { permissionsForRole } from '../constants/permissions.js';
+
+import { sendEmail } from './email.service.js';
+import * as auditService from './audit.service.js';
+import * as tokenService from './token.service.js';
 
 const clientBase = () => env.corsOrigins[0] || env.CLIENT_URL;
 

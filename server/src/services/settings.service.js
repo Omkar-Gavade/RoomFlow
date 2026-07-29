@@ -7,9 +7,10 @@
  * controller delegates those to the existing user/auth services (DRY).
  */
 import { SystemConfig } from '../models/SystemConfig.model.js';
-import * as auditService from './audit.service.js';
 import { ApiError } from '../utils/ApiError.js';
 import { AUDIT_ACTIONS, AUDIT_ENTITY_TYPES } from '../constants/auditActions.js';
+
+import * as auditService from './audit.service.js';
 
 const CACHE_TTL_MS = 5 * 60 * 1000;
 let cache = null;

@@ -10,6 +10,7 @@
  */
 import { transporter, mailFrom, isMailerConfigured } from '../config/mailer.js';
 import { logger } from '../config/logger.js';
+
 import { renderTemplate } from './template.service.js';
 
 /**

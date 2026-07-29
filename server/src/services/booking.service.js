@@ -8,9 +8,6 @@
  */
 import { Booking } from '../models/Booking.model.js';
 import { Room } from '../models/Room.model.js';
-import * as auditService from './audit.service.js';
-import * as availability from './availability.service.js';
-import * as notification from './notification.service.js';
 import { ApiError } from '../utils/ApiError.js';
 import { runWithOptionalTransaction } from '../utils/withTransaction.js';
 import { roomOverlapFilter, userOverlapFilter } from '../utils/conflictDetector.js';
@@ -22,6 +19,10 @@ import { BOOKING_STATUS, ACTIVE_BOOKING_STATUSES } from '../constants/bookingSta
 import { ROOM_STATUS } from '../constants/roomCategories.js';
 import { ROLES } from '../constants/roles.js';
 import { BOOKING_RULES } from '../constants/bookingRules.js';
+
+import * as notification from './notification.service.js';
+import * as availability from './availability.service.js';
+import * as auditService from './audit.service.js';
 
 const SORTABLE = ['bookingDate', 'startsAt', 'createdAt', 'status'];
 const APPROVER_ROLES = [ROLES.ADMIN, ROLES.STAFF];

@@ -15,6 +15,7 @@ import bcrypt from 'bcryptjs';
 
 import { ROLE_VALUES, ROLES } from '../constants/roles.js';
 import { env } from '../config/env.js';
+
 import { softDeletePlugin } from './plugins/softDelete.plugin.js';
 import { toJSONPlugin } from './plugins/toJSON.plugin.js';
 

@@ -11,6 +11,7 @@ import mongoose from 'mongoose';
 
 import { ROOM_CATEGORY_VALUES, ROOM_STATUS, ROOM_STATUS_VALUES } from '../constants/roomCategories.js';
 import { FACILITY_VALUES } from '../constants/facilities.js';
+
 import { softDeletePlugin } from './plugins/softDelete.plugin.js';
 import { toJSONPlugin } from './plugins/toJSON.plugin.js';
 

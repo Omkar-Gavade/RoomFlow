@@ -28,7 +28,13 @@ export function Card({ variant = 'solid', hover = false, className, children, ..
   return (
     <Comp
       className={cn(
-        'relative overflow-hidden rounded-xl text-card-foreground transition-[box-shadow,border-color] duration-300',
+        // NOTE: no `overflow-hidden` here — it clipped taller card bodies when a
+        // grid row stretched items to equal height. The sheen/ring use inherited
+        // radius + masks, so they render correctly without clipping.
+        // `min-w-0`: grid/flex items default to min-width:auto and refuse to
+        // shrink below their content, which let a wide list row stretch the card
+        // past the viewport (horizontal scroll on mobile).
+        'relative min-w-0 rounded-xl text-card-foreground transition-[box-shadow,border-color] duration-300',
         VARIANTS[variant],
         hover && 'hover:border-primary/30 hover:shadow-lg',
         className
@@ -41,8 +47,18 @@ export function Card({ variant = 'solid', hover = false, className, children, ..
   );
 }
 
+/**
+ * `flex-wrap` + `min-w-0` on the text column: without them a title beside an
+ * action button cannot shrink (flex items default to min-width:auto), which
+ * pushed cards past the viewport and produced horizontal scroll on mobile.
+ */
 export function CardHeader({ className, ...props }) {
-  return <div className={cn('flex items-start justify-between gap-3 p-5 pb-3', className)} {...props} />;
+  return (
+    <div
+      className={cn('flex flex-wrap items-start justify-between gap-3 p-5 pb-3 [&>*]:min-w-0', className)}
+      {...props}
+    />
+  );
 }
 export function CardTitle({ className, ...props }) {
   return <h3 className={cn('text-base font-semibold tracking-tight', className)} {...props} />;

@@ -10,6 +10,7 @@
 import mongoose from 'mongoose';
 
 import { AUDIT_ENTITY_TYPES } from '../constants/auditActions.js';
+
 import { toJSONPlugin } from './plugins/toJSON.plugin.js';
 
 const { Schema, model } = mongoose;

@@ -23,6 +23,7 @@ import {
   RECURRENCE_TYPES,
   RECURRENCE_VALUES,
 } from '../constants/bookingStatus.js';
+
 import { toJSONPlugin } from './plugins/toJSON.plugin.js';
 
 const { Schema, model } = mongoose;

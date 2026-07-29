@@ -8,7 +8,6 @@
  */
 import { Notification } from '../models/Notification.model.js';
 import { User } from '../models/User.model.js';
-import { sendTemplatedEmail } from './email.service.js';
 import { ApiError } from '../utils/ApiError.js';
 import { getPagination, buildMeta } from '../utils/pagination.js';
 import { generateICS, icsAttachment } from '../utils/icsGenerator.js';
@@ -21,6 +20,8 @@ import {
   NOTIFICATION_PRIORITY,
 } from '../constants/notificationTypes.js';
 import { ROLES } from '../constants/roles.js';
+
+import { sendTemplatedEmail } from './email.service.js';
 
 // --- core ------------------------------------------------------------------
 

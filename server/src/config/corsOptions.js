@@ -4,8 +4,9 @@
  * Strict origin allowlist from env, credentials enabled (refresh-token cookie),
  * explicit methods and headers. No wildcard origin in any environment.
  */
-import { env } from './env.js';
 import { ApiError } from '../utils/ApiError.js';
+
+import { env } from './env.js';
 
 export const corsOptions = {
   origin(origin, callback) {

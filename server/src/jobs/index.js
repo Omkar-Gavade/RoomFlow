@@ -8,12 +8,13 @@
  */
 import cron from 'node-cron';
 
+import { env } from '../config/env.js';
+import { logger } from '../config/logger.js';
+
 import { reminderJob } from './reminderJob.js';
 import { autoCompleteJob } from './autoCompleteJob.js';
 import { expirePendingJob } from './expirePendingJob.js';
 import { cleanupTokensJob } from './cleanupTokensJob.js';
-import { env } from '../config/env.js';
-import { logger } from '../config/logger.js';
 
 export const JOBS = Object.freeze({
   reminder: reminderJob,

@@ -8,6 +8,7 @@
  * actual role check is enforced by route middleware + service ownership guards.
  */
 import { BOOKING_STATUS as S } from '../constants/bookingStatus.js';
+
 import { ApiError } from './ApiError.js';
 
 const TRANSITIONS = {

@@ -180,16 +180,22 @@ export function BookingList({ title, subtitle, rows, emptyTitle, emptyMessage, a
                 variants={listItem}
                 className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
               >
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-foreground">
                     {b.roomName || 'Room'}
                     {b.userName && <span className="text-muted-foreground"> · {b.userName}</span>}
                   </p>
-                  <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">
+                  {/* truncate here too — an untruncated mono ref forced the row
+                      wider than the card and caused horizontal scroll on mobile */}
+                  <p className="mt-0.5 truncate font-mono text-[11px] text-muted-foreground">
                     {b.bookingRef} · {b.startTime}–{b.endTime}
                   </p>
                 </div>
-                {b.status && <StatusBadge status={b.status} pulse={b.status === 'pending'} />}
+                {b.status && (
+                  <span className="shrink-0">
+                    <StatusBadge status={b.status} pulse={b.status === 'pending'} />
+                  </span>
+                )}
               </motion.li>
             ))}
           </motion.ul>
