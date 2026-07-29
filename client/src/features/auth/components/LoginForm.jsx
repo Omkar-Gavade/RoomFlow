@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ArrowRight, Eye, EyeOff } from 'lucide-react';
 
-import { FormField } from '../../../components/ui/FormField.jsx';
+import { FloatingField } from '../../../components/ui/FloatingField.jsx';
 import { Button } from '../../../components/ui/Button.jsx';
 import { Alert } from '../../../components/ui/Alert.jsx';
+import { SocialButtons } from './SocialButtons.jsx';
 import { useAuth } from '../../../hooks/useAuth.js';
 import { useToast } from '../../../hooks/useToast.js';
 import { ROUTES } from '../../../constants/routes.js';
@@ -14,10 +16,11 @@ export function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const [form, setForm] = useState({ email: '', password: '' });
+  const [show, setShow] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +28,7 @@ export function LoginForm() {
     setLoading(true);
     try {
       await login(form);
-      toast.success('Welcome back!');
+      toast.success('Welcome back');
       navigate(location.state?.from || ROUTES.DASHBOARD, { replace: true });
     } catch (err) {
       setError(err.message || 'Login failed');
@@ -36,21 +39,63 @@ export function LoginForm() {
 
   return (
     <form onSubmit={onSubmit} noValidate>
-      {error && <Alert variant="error" className="mb-4">{error}</Alert>}
-      <FormField label="Email" name="email" type="email" required value={form.email} onChange={onChange} autoComplete="email" />
-      <FormField label="Password" name="password" type="password" required value={form.password} onChange={onChange} autoComplete="current-password" />
-      <div className="mb-4 text-right">
-        <Link to={ROUTES.FORGOT_PASSWORD} className="text-sm text-primary hover:underline">
+      {error && (
+        <Alert variant="error" className="mb-5">
+          {error}
+        </Alert>
+      )}
+
+      <FloatingField
+        label="Email address"
+        name="email"
+        type="email"
+        autoComplete="email"
+        value={form.email}
+        onChange={onChange}
+        required
+      />
+      <FloatingField
+        label="Password"
+        name="password"
+        type={show ? 'text' : 'password'}
+        autoComplete="current-password"
+        value={form.password}
+        onChange={onChange}
+        required
+        trailing={
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9"
+            onClick={() => setShow((s) => !s)}
+            aria-label={show ? 'Hide password' : 'Show password'}
+          >
+            {show ? <EyeOff size={16} /> : <Eye size={16} />}
+          </Button>
+        }
+      />
+
+      <div className="mb-5 flex items-center justify-between">
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground">
+          <input type="checkbox" className="h-4 w-4 rounded border-border accent-[var(--color-primary)]" />
+          Remember me
+        </label>
+        <Link to={ROUTES.FORGOT_PASSWORD} className="text-sm font-medium text-primary hover:underline">
           Forgot password?
         </Link>
       </div>
-      <Button type="submit" className="w-full" loading={loading}>
-        Log in
+
+      <Button type="submit" size="lg" className="w-full" loading={loading}>
+        Log in <ArrowRight size={16} />
       </Button>
-      <p className="mt-4 text-center text-sm text-muted-foreground">
-        No account?{' '}
-        <Link to={ROUTES.REGISTER} className="text-primary hover:underline">
-          Register
+
+      <SocialButtons />
+
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        New to RoomFlow?{' '}
+        <Link to={ROUTES.REGISTER} className="font-medium text-primary hover:underline">
+          Create an account
         </Link>
       </p>
     </form>

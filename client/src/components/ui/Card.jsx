@@ -1,23 +1,60 @@
-/** Card — DESIGN-SYSTEM §8.3. Surface, border, radius lg, subtle shadow. */
-import { cn } from '../../lib/cn.js';
+/**
+ * Card — DESIGN-SYSTEM §8.3 + skill Glassmorphism.
+ * Variants: solid (default), glass (blur 16px + light border), gradient (hairline
+ * gradient ring). Optional hover lift — transform only, reduced-motion aware.
+ */
+import { motion, useReducedMotion } from 'framer-motion';
 
-export function Card({ className, ...props }) {
+import { cn } from '../../lib/cn.js';
+import { EASE_2 } from '../../lib/motion.js';
+
+const VARIANTS = {
+  solid: 'sheen bg-card border border-border shadow-sm',
+  glass: 'sheen glass shadow-md',
+  gradient: 'sheen bg-card border border-border shadow-md ring-gradient',
+  plain: 'bg-card/50 border border-border/60',
+};
+
+export function Card({ variant = 'solid', hover = false, className, children, ...props }) {
+  const reduce = useReducedMotion();
+  const Comp = hover && !reduce ? motion.div : 'div';
+  const motionProps =
+    hover && !reduce
+      ? {
+          whileHover: { y: -4, transition: { duration: 0.2, ease: EASE_2 } },
+        }
+      : {};
+
   return (
-    <div
-      className={cn('rounded-lg border border-border bg-card text-card-foreground shadow-sm', className)}
+    <Comp
+      className={cn(
+        'relative overflow-hidden rounded-xl text-card-foreground transition-[box-shadow,border-color] duration-300',
+        VARIANTS[variant],
+        hover && 'hover:border-primary/30 hover:shadow-lg',
+        className
+      )}
+      {...motionProps}
       {...props}
-    />
+    >
+      {children}
+    </Comp>
   );
 }
 
 export function CardHeader({ className, ...props }) {
-  return <div className={cn('p-6 pb-2', className)} {...props} />;
+  return <div className={cn('flex items-start justify-between gap-3 p-5 pb-3', className)} {...props} />;
 }
 export function CardTitle({ className, ...props }) {
-  return <h3 className={cn('text-lg font-semibold', className)} {...props} />;
+  return <h3 className={cn('text-base font-semibold tracking-tight', className)} {...props} />;
+}
+export function CardDescription({ className, ...props }) {
+  return <p className={cn('text-sm text-muted-foreground', className)} {...props} />;
 }
 export function CardBody({ className, ...props }) {
-  return <div className={cn('p-6 pt-2', className)} {...props} />;
+  return <div className={cn('p-5 pt-0', className)} {...props} />;
+}
+export function CardFooter({ className, ...props }) {
+  return <div className={cn('flex items-center gap-2 border-t border-border p-4', className)} {...props} />;
 }
 
 export default Card;

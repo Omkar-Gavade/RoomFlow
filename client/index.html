@@ -3,14 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="RoomFlow — Smart Room Booking Management Portal" />
-    <title>RoomFlow</title>
+    <meta
+      name="description"
+      content="RoomFlow — smart room booking management for universities, offices, libraries and training centres. Real-time availability with a conflict-free booking engine."
+    />
+    <meta name="theme-color" content="#0284c7" />
+    <title>RoomFlow — Smart Room Booking Management</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Apply the stored theme before paint to avoid a flash of the wrong mode -->
+    <script>
+      (function () {
+        try {
+          var t =
+            localStorage.getItem('roomflow-theme') ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.classList.toggle('dark', t === 'dark');
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {
+          /* ignore */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -1,76 +1,280 @@
-/* RoomFlow design tokens — DESIGN-SYSTEM.md §2 (frozen palette), §2.2 (status),
-   §3 (type), §15 (a11y). Light-first with full dark (ADR-D01). Semantic CSS
-   variables consumed via Tailwind (bg-primary, text-foreground, …). */
+/* RoomFlow design tokens.
+ *
+ * Colours are stored as SPACE-SEPARATED RGB CHANNELS ("2 132 199") and consumed
+ * through `rgb(var(--x) / <alpha-value>)` in tailwind.config.js. This is what makes
+ * every opacity utility (bg-primary/10, border-accent/25, …) actually resolve —
+ * a hex value in a CSS variable silently breaks Tailwind's alpha modifier.
+ *
+ * Brand anchor stays the frozen sky family (ADR-D02); the neutral ramp, surface
+ * elevation and gradient system are upgraded for depth.
+ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Light mode — Booking & Appointment App palette (ADR-D02) */
-  --color-primary: #0284c7;
-  --color-on-primary: #ffffff;
-  --color-secondary: #0ea5e9;
-  --color-accent: #059669;
-  --color-on-accent: #ffffff;
-  --color-background: #f0f9ff;
-  --color-foreground: #0f172a;
-  --color-card: #ffffff;
-  --color-card-foreground: #0f172a;
-  --color-muted: #eff7fb;
-  --color-muted-foreground: #64748b;
-  --color-border: #e0f0f8;
-  --color-destructive: #dc2626;
-  --color-ring: #0284c7;
+  /* --- Brand --- */
+  --c-primary: 2 132 199; /* sky-600  — frozen anchor */
+  --c-primary-soft: 14 165 233; /* sky-500 */
+  --c-on-primary: 255 255 255;
+  --c-violet: 99 102 241; /* indigo-500 — gradient partner */
+  --c-accent: 5 150 105; /* emerald-600 — success / available */
+  --c-on-accent: 255 255 255;
+  --c-destructive: 220 38 38;
 
-  /* Booking status vocabulary (§2.2) */
-  --status-pending: #f59e0b;
-  --status-approved: #059669;
-  --status-rejected: #dc2626;
-  --status-cancelled: #64748b;
-  --status-completed: #0284c7;
+  /* --- Neutral ramp (cool slate) --- */
+  --c-background: 247 250 253;
+  --c-surface: 255 255 255; /* card */
+  --c-surface-2: 241 246 251; /* elevated / hover */
+  --c-muted: 238 244 250;
+  --c-foreground: 12 20 38;
+  --c-muted-foreground: 91 106 130;
+  --c-border: 219 231 243;
+  --c-ring: 2 132 199;
+
+  /* --- Booking status vocabulary (DESIGN-SYSTEM §2.2) --- */
+  --c-pending: 217 119 6;
+  --c-approved: 5 150 105;
+  --c-rejected: 220 38 38;
+  --c-cancelled: 100 116 139;
+  --c-completed: 2 132 199;
+
+  /* --- Gradients --- */
+  --grad-brand: linear-gradient(135deg, rgb(2 132 199) 0%, rgb(14 165 233) 45%, rgb(99 102 241) 100%);
+  --grad-accent: linear-gradient(135deg, rgb(5 150 105) 0%, rgb(16 185 129) 100%);
+  --grad-text: linear-gradient(115deg, rgb(12 20 38) 0%, rgb(3 105 161) 48%, rgb(79 70 229) 100%);
+
+  /* --- Glass (skill: blur 10–20px, translucent, 1px light border) --- */
+  --glass-bg: 255 255 255;
+  --glass-alpha: 0.7;
+  --glass-border: 255 255 255;
+  --glass-border-alpha: 0.75;
+  --glass-blur: 16px;
+
+  /* --- Elevation --- */
+  --shadow-xs: 0 1px 2px rgb(12 20 38 / 0.05);
+  --shadow-sm: 0 1px 3px rgb(12 20 38 / 0.07), 0 1px 2px rgb(12 20 38 / 0.04);
+  --shadow-md: 0 6px 16px -4px rgb(12 20 38 / 0.1), 0 2px 6px -2px rgb(12 20 38 / 0.05);
+  --shadow-lg: 0 16px 40px -12px rgb(12 20 38 / 0.16), 0 4px 12px -4px rgb(12 20 38 / 0.07);
+  --shadow-xl: 0 32px 72px -16px rgb(12 20 38 / 0.22), 0 8px 24px -8px rgb(12 20 38 / 0.1);
+  --shadow-glow: 0 0 0 1px rgb(2 132 199 / 0.14), 0 16px 48px -12px rgb(2 132 199 / 0.35);
+
+  /* --- Ambient --- */
+  --aurora-1: rgb(2 132 199 / 0.3);
+  --aurora-2: rgb(16 185 129 / 0.22);
+  --aurora-3: rgb(99 102 241 / 0.26);
+  --grid-line: rgb(12 20 38 / 0.05);
 }
 
 :root[data-theme='dark'],
 .dark {
-  /* Dark mode (§2.3) */
-  --color-primary: #38bdf8;
-  --color-on-primary: #0b1220;
-  --color-secondary: #0ea5e9;
-  --color-accent: #34d399;
-  --color-on-accent: #0b1220;
-  --color-background: #0b1220;
-  --color-foreground: #e2e8f0;
-  --color-card: #111a2e;
-  --color-card-foreground: #e2e8f0;
-  --color-muted: #1e293b;
-  --color-muted-foreground: #94a3b8;
-  --color-border: #1e2a44;
-  --color-destructive: #f87171;
-  --color-ring: #38bdf8;
+  --c-primary: 56 189 248; /* sky-400 — lifted for dark contrast */
+  --c-primary-soft: 125 211 252;
+  --c-on-primary: 6 16 30;
+  --c-violet: 129 140 248;
+  --c-accent: 52 211 153;
+  --c-on-accent: 4 26 20;
+  --c-destructive: 248 113 113;
 
-  --status-pending: #f59e0b;
-  --status-approved: #34d399;
-  --status-rejected: #f87171;
-  --status-cancelled: #94a3b8;
-  --status-completed: #38bdf8;
+  --c-background: 7 10 20; /* deep navy-black, not pure black */
+  --c-surface: 14 20 34;
+  --c-surface-2: 21 29 47;
+  --c-muted: 25 34 54;
+  --c-foreground: 229 237 248;
+  --c-muted-foreground: 143 158 181;
+  --c-border: 32 44 69;
+  --c-ring: 56 189 248;
+
+  --c-pending: 251 191 36;
+  --c-approved: 52 211 153;
+  --c-rejected: 248 113 113;
+  --c-cancelled: 148 163 184;
+  --c-completed: 56 189 248;
+
+  --grad-brand: linear-gradient(135deg, rgb(56 189 248) 0%, rgb(34 211 238) 45%, rgb(129 140 248) 100%);
+  --grad-accent: linear-gradient(135deg, rgb(52 211 153) 0%, rgb(110 231 183) 100%);
+  --grad-text: linear-gradient(115deg, rgb(229 237 248) 0%, rgb(125 211 252) 50%, rgb(165 180 252) 100%);
+
+  --glass-bg: 18 26 44;
+  --glass-alpha: 0.66;
+  --glass-border: 148 187 233;
+  --glass-border-alpha: 0.14;
+
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.45);
+  --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.5);
+  --shadow-md: 0 6px 18px -4px rgb(0 0 0 / 0.55);
+  --shadow-lg: 0 18px 44px -12px rgb(0 0 0 / 0.65);
+  --shadow-xl: 0 34px 80px -18px rgb(0 0 0 / 0.75);
+  --shadow-glow: 0 0 0 1px rgb(56 189 248 / 0.2), 0 18px 52px -12px rgb(56 189 248 / 0.4);
+
+  --aurora-1: rgb(56 189 248 / 0.22);
+  --aurora-2: rgb(52 211 153 / 0.15);
+  --aurora-3: rgb(129 140 248 / 0.24);
+  --grid-line: rgb(226 232 240 / 0.055);
 }
 
 @layer base {
   * {
-    border-color: var(--color-border);
+    border-color: rgb(var(--c-border));
   }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'ss01';
+    text-rendering: optimizeLegibility;
   }
-  /* Visible focus rings — never removed (§15 #3, WCAG 2.1 AA) */
+
+  /* Form controls must inherit the theme, never the UA default */
+  input,
+  textarea,
+  select {
+    background-color: transparent;
+    color: inherit;
+  }
+
   :focus-visible {
-    outline: 2px solid var(--color-ring);
+    outline: 2px solid rgb(var(--c-ring));
     outline-offset: 2px;
+    border-radius: 8px;
   }
+
+  ::selection {
+    background: rgb(var(--c-primary) / 0.25);
+    color: rgb(var(--c-foreground));
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--c-border));
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--c-muted-foreground) / 0.7);
+    background-clip: content-box;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    * {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+}
+
+@layer components {
+  .glass {
+    background: rgb(var(--glass-bg) / var(--glass-alpha));
+    backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+    border: 1px solid rgb(var(--glass-border) / var(--glass-border-alpha));
+  }
+
+  .text-gradient {
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .bg-grad-brand {
+    background-image: var(--grad-brand);
+  }
+  .bg-grad-accent {
+    background-image: var(--grad-accent);
+  }
+
+  /* Film grain — depth without weight */
+  .noise::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.28;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  }
+
+  /* Gradient hairline edge */
+  .ring-gradient {
+    position: relative;
+  }
+  .ring-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--grad-brand);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* Top highlight — the "light source" that sells premium surfaces */
+  .sheen::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(255 255 255 / 0.5),
+      transparent
+    );
+    pointer-events: none;
+  }
+  .dark .sheen::before {
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.14), transparent);
+  }
+
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.16), transparent);
+    animation: shimmer 1.6s infinite;
+  }
+
+  .grid-pattern {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
   }
 }
