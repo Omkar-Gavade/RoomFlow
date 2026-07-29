@@ -13,6 +13,7 @@ import { env } from './config/env.js'; // FIRST import — validates config.
 import { logger } from './config/logger.js';
 import { connectDB, disconnectDB } from './config/db.js';
 import { verifyMailer } from './config/mailer.js';
+import { registerCron } from './jobs/index.js';
 import app from './app.js';
 
 let server;
@@ -27,6 +28,7 @@ async function start() {
     server = app.listen(env.PORT, () => {
       logger.info(`🚀 RoomFlow API listening on :${env.PORT} [${env.NODE_ENV}]`);
       logger.info(`   Health: http://localhost:${env.PORT}/api/${env.API_VERSION}/health`);
+      registerCron(); // Phase 4 — in-process scheduled jobs
     });
   } catch (err) {
     logger.error('Failed to start server', { message: err.message, stack: err.stack });

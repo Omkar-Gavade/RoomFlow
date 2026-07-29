@@ -10,6 +10,7 @@ import { Booking } from '../models/Booking.model.js';
 import { Room } from '../models/Room.model.js';
 import * as auditService from './audit.service.js';
 import * as availability from './availability.service.js';
+import * as notification from './notification.service.js';
 import { ApiError } from '../utils/ApiError.js';
 import { runWithOptionalTransaction } from '../utils/withTransaction.js';
 import { roomOverlapFilter, userOverlapFilter } from '../utils/conflictDetector.js';
@@ -169,10 +170,11 @@ export async function createBooking(dto, actor, ctx) {
   const status = autoApprove ? BOOKING_STATUS.APPROVED : BOOKING_STATUS.PENDING;
 
   // Transactional conflict check + insert, retried on ref collision.
+  let created = null;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
       // eslint-disable-next-line no-await-in-loop
-      return await runWithOptionalTransaction(async (session) => {
+      created = await runWithOptionalTransaction(async (session) => {
         const roomConflict = await Booking.findOne(
           roomOverlapFilter(booking.room, booking.startsAt, booking.endsAt)
         ).session(session || null);
@@ -212,15 +214,23 @@ export async function createBooking(dto, actor, ctx) {
         await audit(AUDIT_ACTIONS.BOOKING_CREATED, {
           actor, target: booking, ctx, after: { status, ref: booking.bookingRef },
         });
-        // HOOK (Phase 4): enqueue confirmation email + in-app notification here.
         return booking;
       });
+      break;
     } catch (err) {
-      if (err?.code === 11000 && String(err?.keyValue?.bookingRef)) continue; // ref race → retry
+      if (err?.code === 11000 && err?.keyValue?.bookingRef) continue; // ref race → retry
       throw err;
     }
   }
-  throw ApiError.conflict('Could not allocate a booking reference, try again', 'REF_ALLOCATION_FAILED');
+  if (!created) {
+    throw ApiError.conflict('Could not allocate a booking reference, try again', 'REF_ALLOCATION_FAILED');
+  }
+  // Notifications post-commit — best-effort, must never fail the booking (§2.3, FR-NOTIF-07).
+  notification.notifyBookingCreated(created).catch(() => {});
+  if (created.status === BOOKING_STATUS.PENDING) {
+    notification.notifyApprovalRequest(created).catch(() => {});
+  }
+  return created;
 }
 
 // ===========================================================================
@@ -231,7 +241,7 @@ export async function approveBooking(id, remark, actor, ctx) {
   const booking = await findBookingOr404(id);
   assertTransition(booking.status, BOOKING_STATUS.APPROVED);
 
-  return runWithOptionalTransaction(async (session) => {
+  const result = await runWithOptionalTransaction(async (session) => {
     // Re-check at approval time — another booking may have been approved meanwhile (§16 step 4).
     const approvedOverlap = await Booking.findOne({
       ...roomOverlapFilter(booking.room, booking.startsAt, booking.endsAt, booking._id),
@@ -268,9 +278,11 @@ export async function approveBooking(id, remark, actor, ctx) {
     );
 
     await audit(AUDIT_ACTIONS.BOOKING_APPROVED, { actor, target: booking, ctx });
-    // HOOK (Phase 4): approval email + .ics + reminder scheduling.
     return booking;
   });
+  // Approval email (+.ics) + in-app, post-commit best-effort.
+  notification.notifyBookingApproved(result).catch(() => {});
+  return result;
 }
 
 export async function rejectBooking(id, reason, actor, ctx) {
@@ -281,6 +293,7 @@ export async function rejectBooking(id, reason, actor, ctx) {
   booking.statusHistory.push(historyEntry(BOOKING_STATUS.REJECTED, actor, reason));
   await booking.save();
   await audit(AUDIT_ACTIONS.BOOKING_REJECTED, { actor, target: booking, ctx });
+  notification.notifyBookingRejected(booking).catch(() => {});
   return booking;
 }
 
@@ -301,6 +314,7 @@ export async function cancelBooking(id, reason, actor, ctx) {
   booking.statusHistory.push(historyEntry(BOOKING_STATUS.CANCELLED, actor, reason));
   await booking.save();
   await audit(AUDIT_ACTIONS.BOOKING_CANCELLED, { actor, target: booking, ctx });
+  notification.notifyBookingCancelled(booking).catch(() => {});
   return booking;
 }
 

@@ -36,6 +36,13 @@ const envSchema = z.object({
   RESET_TOKEN_EXPIRY_MIN: z.coerce.number().int().min(5).default(15),
   EMAIL_VERIFICATION_EXPIRY_HOURS: z.coerce.number().int().min(1).default(24),
 
+  // --- Notifications & jobs (Phase 4) ---
+  REMINDER_LEAD_MINUTES: z.coerce.number().int().min(5).default(60),
+  ENABLE_CRON: z
+    .enum(['true', 'false'])
+    .default('true')
+    .transform((v) => v === 'true'),
+
   CLOUDINARY_CLOUD_NAME: z.string().optional().default(''),
   CLOUDINARY_API_KEY: z.string().optional().default(''),
   CLOUDINARY_API_SECRET: z.string().optional().default(''),

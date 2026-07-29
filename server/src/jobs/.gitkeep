@@ -1,2 +1,0 @@
-# Scheduled jobs — added Phase 4 (reminder, autoComplete, expirePending,
-# cleanupTokens). Triggered via external cron on Render free tier. §21.5.

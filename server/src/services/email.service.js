@@ -10,6 +10,7 @@
  */
 import { transporter, mailFrom, isMailerConfigured } from '../config/mailer.js';
 import { logger } from '../config/logger.js';
+import { renderTemplate } from './template.service.js';
 
 /**
  * @param {object} payload
@@ -36,4 +37,20 @@ export async function sendEmail({ to, subject, html, text, attachments = [] }) {
   }
 }
 
-export default { sendEmail };
+/**
+ * Render a Handlebars template and send it. Also never throws (returns status).
+ * @param {string} template  Template name (templates/emails/<name>.hbs)
+ * @param {object} opts       { to, subject, data, attachments }
+ */
+export async function sendTemplatedEmail(template, { to, subject, data = {}, attachments = [] }) {
+  let html;
+  try {
+    html = renderTemplate(template, data);
+  } catch (err) {
+    logger.error('Email template render failed', { template, error: err.message });
+    return { status: 'failed', error: err.message };
+  }
+  return sendEmail({ to, subject, html, attachments });
+}
+
+export default { sendEmail, sendTemplatedEmail };
