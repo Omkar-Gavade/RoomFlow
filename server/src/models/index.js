@@ -8,3 +8,4 @@ export { Booking } from './Booking.model.js';
 export { Notification } from './Notification.model.js';
 export { AuditLog } from './AuditLog.model.js';
 export { RefreshToken } from './RefreshToken.model.js';
+export { SystemConfig } from './SystemConfig.model.js';
