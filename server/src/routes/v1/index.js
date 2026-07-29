@@ -14,6 +14,7 @@ import roomRoutes from './room.routes.js';
 import bookingRoutes from './booking.routes.js';
 import notificationRoutes from './notification.routes.js';
 import jobRoutes from './jobs.routes.js';
+import dashboardRoutes from './dashboard.routes.js';
 
 const router = Router();
 
@@ -24,6 +25,7 @@ router.use('/rooms', roomRoutes); // Phase 2
 router.use('/bookings', bookingRoutes); // Phase 3
 router.use('/notifications', notificationRoutes); // Phase 4
 router.use('/jobs', jobRoutes); // Phase 4 (external cron trigger)
+router.use('/dashboard', dashboardRoutes); // Phase 5
 
 // --- Module routers (added in later phases) ---
 // router.use('/users', userRoutes);         // Phase 6
