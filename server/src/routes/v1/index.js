@@ -9,11 +9,13 @@ import { Router } from 'express';
 
 import healthRoutes from './health.routes.js';
 import authRoutes from './auth.routes.js';
+import userRoutes from './user.routes.js';
 
 const router = Router();
 
 router.use('/', healthRoutes);
 router.use('/auth', authRoutes); // Phase 1B
+router.use('/users', userRoutes); // Phase 1C
 
 // --- Module routers (added in later phases) ---
 // router.use('/users', userRoutes);         // Phase 6
